@@ -45,8 +45,8 @@ const defaultButton = variantDefault(buttonVariant, {
 defaultButton()
 // 'btn text-base bg-blue-500'
 
-defaultButton({ size: 'text-lg' })
-// 'btn text-lg bg-blue-500'
+defaultButton({ size: 'lg' })
+// 'btn text-lg px-6 bg-blue-500'
 ```
 
 ## Size
