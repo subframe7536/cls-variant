@@ -38,12 +38,12 @@ button({ size: 'sm', color: 'primary' })
 // 'btn text-sm px-2 bg-blue-500'
 
 const defaultButton = variantDefault(buttonVariant, {
-  size: 'text-base',
-  color: 'bg-blue-500'
+  size: 'sm',
+  color: 'primary'
 })
 
 defaultButton()
-// 'btn text-base bg-blue-500'
+// 'btn text-sm px-2 bg-blue-500'
 
 defaultButton({ size: 'lg' })
 // 'btn text-lg px-6 bg-blue-500'
