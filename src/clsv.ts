@@ -52,11 +52,13 @@ export function clsv<T extends Record<string, Record<string, string>>>(
 
 /**
  * Add default value for {@link clsv}
+ *
  * @param variant variant function
  * @param dflt default config
+ *
  * @example
  * ```ts
- * const defaultButton = clsvDefault(buttonVariant, {
+ * const defaultButton = clsvDefault(button, {
  *   size: 'text-base',
  *   color: 'bg-blue-500'
  * })
@@ -82,14 +84,31 @@ type CompoundVariantOptions<T extends Record<string, Record<string, string>>> = 
   conditions: { [K in keyof T]: Arrayable<keyof T[K]> },
 ]>
 
+/**
+ * Add compound config for {@link clsv}
+ *
+ * @param variant variant function
+ * @param compound compound variant config
+ *
+ * @example
+ * ```ts
+ * const compoundButton = clsvCompound(button, [
+ *   ['shadow', { size: 'md', color: 'primary' }],
+ *   ['rounded', { size: 'lg', color: ['primary', 'secondary'] }],
+ * ])
+ *
+ * compoundButton({ size: 'lg', color: 'primary' })
+ * // 'btn text-sm px-2 bg-blue-500 rounded'
+ * ```
+ */
 export function clsvCompound<T extends Record<string, Record<string, string>>>(
   variant: VariantGenerator<T>,
-  conf: CompoundVariantOptions<T>,
+  compound: CompoundVariantOptions<T>,
 ): VariantGenerator<T> {
   return (config) => {
-    let result = variant(config), i = 0, len = conf.length
+    let result = variant(config), i = 0, len = compound.length
     for (; i < len; i++) {
-      let [cls, variantConfig] = conf[i], match = true, keys = Object.keys(variantConfig), j = 0, kLen = keys.length
+      let [cls, variantConfig] = compound[i], match = true, keys = Object.keys(variantConfig), j = 0, kLen = keys.length
       for (; j < kLen; j++) {
         let k = keys[j], val = config[k] as string, expected = variantConfig[k] as Arrayable<string>
         if (val !== expected && !expected.includes(val)) {

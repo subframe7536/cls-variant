@@ -37,7 +37,7 @@ const button = clsv('btn', {
 button({ size: 'sm', color: 'primary' })
 // 'btn text-sm px-2 bg-blue-500'
 
-const defaultButton = clsvDefault(buttonVariant, {
+const defaultButton = clsvDefault(button, {
   size: 'sm',
   color: 'primary'
 })
@@ -47,6 +47,14 @@ defaultButton()
 
 defaultButton({ size: 'lg' })
 // 'btn text-lg px-6 bg-blue-500'
+
+const compoundButton = clsvCompound(button, [
+  ['shadow', { size: 'md', color: 'primary' }],
+  ['rounded', { size: 'lg', color: ['primary', 'secondary'] }],
+])
+
+compoundButton({ size: 'lg', color: 'primary' })
+// 'btn text-sm px-2 bg-blue-500 rounded'
 ```
 
 ### Util Type
