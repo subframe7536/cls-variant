@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-binary-expression */
 import { describe, expect, it } from 'vitest'
-import { cls, clsv, variantDefault } from '../src'
+import { cls, clsv, clsvDefault } from '../src'
 
 describe('cls', () => {
   it('strings', () => {
@@ -52,19 +52,19 @@ describe('variant', () => {
   })
   it('default', () => {
     expect(
-      variantDefault(
+      clsvDefault(
         clsv('base', {}),
         {},
       )(),
     ).toBe('base')
     expect(
-      variantDefault(
+      clsvDefault(
         clsv('base', { foo: { bar: 'bar' } }),
         { foo: 'bar' },
       )(),
     ).toBe('base bar')
     expect(
-      variantDefault(
+      clsvDefault(
         clsv('base', { foo: { bar: 'bar', baz: 'baz' } }),
         { foo: 'baz' },
       )({ foo: 'baz' }),

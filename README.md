@@ -17,7 +17,7 @@ pnpm add cls-variant
 ## Usage
 
 ```ts
-import { cls, clsv, variantDefault } from 'cls-variant'
+import { cls, clsv, clsvDefault } from 'cls-variant'
 
 cls('btn', ['rounded', ['bg-black']], true && 'b-2', null, 0, false && ['text-red'])
 // 'btn rounded bg-black b-2'
@@ -37,7 +37,7 @@ const button = clsv('btn', {
 button({ size: 'sm', color: 'primary' })
 // 'btn text-sm px-2 bg-blue-500'
 
-const defaultButton = variantDefault(buttonVariant, {
+const defaultButton = clsvDefault(buttonVariant, {
   size: 'sm',
   color: 'primary'
 })
@@ -47,6 +47,14 @@ defaultButton()
 
 defaultButton({ size: 'lg' })
 // 'btn text-lg px-6 bg-blue-500'
+```
+
+### Util Type
+
+```ts
+import type { VariantProps } from 'cls-variant'
+
+type ButtonVariant = VariantProps<typeof button>
 ```
 
 ## Size
@@ -63,7 +71,7 @@ cls-variant v0.0.1
 │                │            │
 │ cls            │      115 B │
 │ clsv           │      104 B │
-│ variantDefault │       61 B │
+│ clsvDefault    │       61 B │
 └────────────────┴────────────┘
 ```
 

@@ -1,4 +1,8 @@
 /* eslint-disable one-var */
+
+/**
+ * Util type for getting variant props
+ */
 export type VariantProps<T extends (variant: Record<string, string>) => string> = Parameters<T>[0]
 
 /**
@@ -44,7 +48,7 @@ export function clsv<T extends Record<string, Record<string, string>>>(
  * @param dflt default config
  * @example
  * ```ts
- * const defaultButton = variantDefault(buttonVariant, {
+ * const defaultButton = clsvDefault(buttonVariant, {
  *   size: 'text-base',
  *   color: 'bg-blue-500'
  * })
@@ -56,7 +60,7 @@ export function clsv<T extends Record<string, Record<string, string>>>(
  * // 'btn text-lg bg-blue-500'
  * ```
  */
-export function variantDefault<T extends Record<string, string>>(
+export function clsvDefault<T extends Record<string, string>>(
   variant: (variant: T) => string,
   dflt: T,
 ): (config?: Partial<T>) => string {
