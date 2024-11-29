@@ -1,6 +1,6 @@
 /* eslint-disable no-constant-binary-expression */
 import { describe, expect, it } from 'vitest'
-import { cls, clsv, clsvDefault } from '../src'
+import { cls, clsv, clsvCompound, clsvDefault } from '../src'
 
 describe('cls', () => {
   it('strings', () => {
@@ -44,30 +44,102 @@ describe('cls', () => {
   })
 })
 
-describe('variant', () => {
-  it('strings', () => {
-    expect(clsv('base', {})({})).toBe('base')
-    expect(clsv('base', { foo: { bar: 'bar' } })({ foo: 'bar' })).toBe('base bar')
-    expect(clsv('base', { foo: { bar: 'bar', baz: 'baz' } })({ foo: 'baz' })).toBe('base baz')
+describe('clsv', () => {
+  const button = clsv('btn', {
+    size: {
+      sm: 'text-sm px-2',
+      md: 'text-base px-4',
+      lg: 'text-lg px-6',
+    },
+    color: {
+      primary: 'bg-blue-500',
+      secondary: 'bg-gray-500',
+    },
   })
-  it('default', () => {
-    expect(
-      clsvDefault(
-        clsv('base', {}),
-        {},
-      )(),
-    ).toBe('base')
-    expect(
-      clsvDefault(
-        clsv('base', { foo: { bar: 'bar' } }),
-        { foo: 'bar' },
-      )(),
-    ).toBe('base bar')
-    expect(
-      clsvDefault(
-        clsv('base', { foo: { bar: 'bar', baz: 'baz' } }),
-        { foo: 'baz' },
-      )({ foo: 'baz' }),
-    ).toBe('base baz')
+
+  it('should return the base classes with no variants', () => {
+    expect(button({} as any)).toBe('btn')
+  })
+
+  it('should return the base classes with one variant', () => {
+    expect(button({ size: 'sm' } as any)).toBe('btn text-sm px-2')
+  })
+
+  it('should return the base classes with multiple variants', () => {
+    expect(button({ size: 'md', color: 'primary' })).toBe('btn text-base px-4 bg-blue-500')
+  })
+
+  it('should handle unknown variants gracefully', () => {
+    expect(button({ size: 'unknown' as any, color: 'primary' })).toBe('btn  bg-blue-500')
+  })
+})
+
+describe('clsvDefault', () => {
+  const button = clsv('btn', {
+    size: {
+      sm: 'text-sm px-2',
+      md: 'text-base px-4',
+      lg: 'text-lg px-6',
+    },
+    color: {
+      primary: 'bg-blue-500',
+      secondary: 'bg-gray-500',
+    },
+  })
+
+  const defaultButton = clsvDefault(button, {
+    size: 'md',
+    color: 'primary',
+  })
+
+  it('should return the default classes when no config is provided', () => {
+    expect(defaultButton()).toBe('btn text-base px-4 bg-blue-500')
+  })
+
+  it('should override default classes with provided config', () => {
+    expect(defaultButton({ size: 'sm' })).toBe('btn text-sm px-2 bg-blue-500')
+  })
+
+  it('should handle partial overrides', () => {
+    expect(defaultButton({ color: 'secondary' })).toBe('btn text-base px-4 bg-gray-500')
+  })
+
+  it('should handle unknown variants gracefully', () => {
+    expect(defaultButton({ size: 'unknown' as any })).toBe('btn  bg-blue-500')
+  })
+})
+
+describe('clsvCompound', () => {
+  const button = clsv('btn', {
+    size: {
+      sm: 'text-sm px-2',
+      md: 'text-base px-4',
+      lg: 'text-lg px-6',
+    },
+    color: {
+      primary: 'bg-blue-500',
+      secondary: 'bg-gray-500',
+    },
+  })
+
+  const compoundButton = clsvCompound(button, [
+    ['shadow', { size: 'md', color: 'primary' }],
+    ['rounded', { size: 'lg', color: ['primary', 'secondary'] }],
+  ])
+
+  it('should return the base classes when no compound conditions match', () => {
+    expect(compoundButton({ size: 'sm', color: 'primary' })).toBe('btn text-sm px-2 bg-blue-500')
+  })
+
+  it('should add the compound class when all conditions match', () => {
+    expect(compoundButton({ size: 'md', color: 'primary' })).toBe('btn text-base px-4 bg-blue-500 shadow')
+  })
+
+  it('should add the compound class when all conditions match with array values', () => {
+    expect(compoundButton({ size: 'lg', color: 'secondary' })).toBe('btn text-lg px-6 bg-gray-500 rounded')
+  })
+
+  it('should not add the compound class when some conditions do not match', () => {
+    expect(compoundButton({ size: 'sm', color: 'secondary' })).toBe('btn text-sm px-2 bg-gray-500')
   })
 })

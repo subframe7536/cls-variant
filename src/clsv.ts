@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /* eslint-disable one-var */
 
 /**
@@ -5,10 +6,16 @@
  */
 export type VariantProps<T extends (variant: Record<string, string>) => string> = Parameters<T>[0]
 
+type VariantOptions<P> = {
+  [K in keyof P]: keyof P[K]
+}
+
+export type VariantGenerator<T> = <P extends T = T>(variant: VariantOptions<P>) => string
+
 /**
  * Concatenate class and variants
  *
- * @param base basic classes
+ * @param cls basic classes
  * @param config variant config
  *
  * @example
@@ -30,15 +37,16 @@ export type VariantProps<T extends (variant: Record<string, string>) => string> 
  * ```
  */
 export function clsv<T extends Record<string, Record<string, string>>>(
-  base: string,
+  cls: string,
   config: T,
-): (variant: { [K in keyof T]: keyof T[K] }) => string {
+): VariantGenerator<T> {
   return (variant) => {
-    let i = 0, k: keyof T, keys = Object.keys(variant) as (keyof T)[], len = keys.length
-    for (k = keys[i] as keyof T; i < len; i++) {
-      base += ` ${config[k][variant[k]]}`
+    let c = cls, i = 0, keys = Object.keys(variant) as (keyof T)[], k, len = keys.length
+    for (; i < len; i++) {
+      k = keys[i] as keyof T
+      c += ' ' + (config[k][variant[k] as any] || '')
     }
-    return base
+    return c
   }
 }
 
@@ -60,9 +68,37 @@ export function clsv<T extends Record<string, Record<string, string>>>(
  * // 'btn text-lg bg-blue-500'
  * ```
  */
-export function clsvDefault<T extends Record<string, string>>(
-  variant: (variant: T) => string,
-  dflt: T,
-): (config?: Partial<T>) => string {
+export function clsvDefault<T extends Record<string, Record<string, string>>>(
+  variant: VariantGenerator<T>,
+  dflt: VariantOptions<T>,
+): (config?: Partial<VariantOptions<T>>) => string {
   return config => variant({ ...dflt, ...config })
+}
+
+type Arrayable<T> = T | T[]
+
+type CompoundVariantOptions<T extends Record<string, Record<string, string>>> = Array<[
+  cls: string,
+  conditions: { [K in keyof T]: Arrayable<keyof T[K]> },
+]>
+
+export function clsvCompound<T extends Record<string, Record<string, string>>>(
+  variant: VariantGenerator<T>,
+  conf: CompoundVariantOptions<T>,
+): VariantGenerator<T> {
+  return (config) => {
+    let result = variant(config), i = 0, len = conf.length
+    for (; i < len; i++) {
+      let [cls, variantConfig] = conf[i], match = true, keys = Object.keys(variantConfig), j = 0, kLen = keys.length
+      for (; j < kLen; j++) {
+        let k = keys[j], val = config[k] as string, expected = variantConfig[k] as Arrayable<string>
+        if (val !== expected && !expected.includes(val)) {
+          match = false
+          break
+        }
+      }
+      match && (result += ' ' + cls)
+    }
+    return result
+  }
 }
