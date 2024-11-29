@@ -72,15 +72,16 @@ type ButtonVariant = VariantProps<typeof button>
 export-size    v0.7.0
 esbuild        v0.19.5
 
-cls-variant v0.0.1
+cls-variant v0.2.0
 
-┌────────────────┬────────────┐
-│ export         │ min+brotli │
-│                │            │
-│ cls            │      115 B │
-│ clsv           │      104 B │
-│ clsvDefault    │       61 B │
-└────────────────┴────────────┘
+┌──────────────┬────────────┐
+│ export       │ min+brotli │
+│              │            │
+│ clsvCompound │      169 B │
+│ cls          │      115 B │
+│ clsv         │      110 B │
+│ clsvDefault  │       61 B │
+└──────────────┴────────────┘
 ```
 
 ## Benchmark
