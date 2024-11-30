@@ -14,7 +14,7 @@ export function cls(...args: ClassValueArray): string {
   let i = 0, tmp, str = '', len = args.length
   for (; i < len; i++) {
     (tmp = args[i])
-    && (tmp as string).at
+    && (tmp as string | ClassValueArray).at
     && (
       str += (str && ' ') + (
         Array.isArray(tmp)
