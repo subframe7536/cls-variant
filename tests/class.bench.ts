@@ -1,7 +1,6 @@
 /* eslint-disable no-constant-binary-expression */
 import { clsx } from 'clsx'
 import { bench } from 'vitest'
-// eslint-disable-next-line antfu/no-import-dist
 import { cls } from '../dist/index'
 
 const clsList: any[] = []

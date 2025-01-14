@@ -95,6 +95,9 @@ describe('clsvDefault', () => {
   it('should return the default classes when no config is provided', () => {
     expect(defaultButton()).toBe('btn text-base px-4 bg-blue-500')
   })
+  it('should return the default classes when undefined config is provided', () => {
+    expect(defaultButton({ size: undefined })).toBe('btn text-base px-4 bg-blue-500')
+  })
 
   it('should override default classes with provided config', () => {
     expect(defaultButton({ size: 'sm' })).toBe('btn text-sm px-2 bg-blue-500')

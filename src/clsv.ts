@@ -1,6 +1,8 @@
 /* eslint-disable prefer-template */
 /* eslint-disable one-var */
 
+import { mergeObjects } from './utils'
+
 /**
  * Util type for getting variant props
  */
@@ -74,7 +76,7 @@ export function clsvDefault<T extends Record<string, Record<string, string>>>(
   variant: VariantGenerator<T>,
   dflt: VariantOptions<T>,
 ): (config?: Partial<VariantOptions<T>>) => string {
-  return config => variant({ ...dflt, ...config })
+  return config => variant(mergeObjects(dflt, config || {}))
 }
 
 type Arrayable<T> = T | T[]
